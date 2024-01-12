@@ -1,0 +1,15 @@
+.App {
+  min-height: 100vh;
+  display: flex;
+  background-color: #fcfcfc;
+}
+
+.app-name {
+  font-family: "Calistoga", cursive;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: -webkit-linear-gradient(left, #319795, #4fd1cf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
