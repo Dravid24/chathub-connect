@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   Button,
   FormControl,
@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { BASE_URL } from "../../common";
 
 const SignUp = () => {
   const [name, setName] = useState<string | null>();
@@ -78,7 +79,8 @@ const SignUp = () => {
       setIsLoading(false);
     }
   };
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsLoading(true);
     if (!name || !email || !password || !confirmPassword) {
       toast({
@@ -90,6 +92,20 @@ const SignUp = () => {
       });
       setIsLoading(false);
       return;
+    }
+    if (email) {
+      const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "Invalid email",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+        setIsLoading(false);
+        return;
+      }
     }
     if (password !== confirmPassword) {
       toast({
@@ -104,7 +120,7 @@ const SignUp = () => {
     }
 
     axios
-      .post("http://localhost:5000/api/user/register", {
+      .post(`${BASE_URL}api/user/register`, {
         name,
         email,
         password,
@@ -136,86 +152,88 @@ const SignUp = () => {
   };
 
   return (
-    <VStack spacing={"7px"}>
-      <FormControl id="name" isRequired>
-        <FormLabel>Name</FormLabel>
-        <Input
-          placeholder="Enter your name"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="email" isRequired>
-        <FormLabel>Email</FormLabel>
-        <Input
-          placeholder="Enter your email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup>
+    <form onSubmit={(e) => handleSubmit(e)}>
+      <VStack spacing={"7px"}>
+        <FormControl id="name" isRequired>
+          <FormLabel>Name</FormLabel>
           <Input
-            type={showPassword ? "text" : "password"}
             placeholder="Enter your name"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
-          <InputRightElement width="4.5rem">
-            <Button
-              h="1.75rem"
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setShowPassword(!showPassword);
-              }}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="confirm-password" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
-        <InputGroup>
+        </FormControl>
+        <FormControl id="email" isRequired>
+          <FormLabel>Email</FormLabel>
           <Input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Enter your name"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <InputRightElement width="4.5rem">
-            <Button
-              h="1.75rem"
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setShowConfirmPassword(!showConfirmPassword);
-              }}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="profile-picture">
-        <FormLabel>Upload your picture</FormLabel>
-        <Input
-          type="file"
-          p={1.5}
-          accept="image/*"
-          placeholder="Enter your email"
-          onChange={(e) => handleUploadPic(e?.target?.files[0])}
-        />
-      </FormControl>
-      <Button
-        colorScheme="teal"
-        variant="solid"
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={handleSubmit}
-        isLoading={isLoading}
-      >
-        Sign Up
-      </Button>
-    </VStack>
+        </FormControl>
+        <FormControl id="password" isRequired>
+          <FormLabel>Password</FormLabel>
+          <InputGroup>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your name"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                h="1.75rem"
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+        <FormControl id="confirm-password" isRequired>
+          <FormLabel>Confirm Password</FormLabel>
+          <InputGroup>
+            <Input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Enter your name"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                h="1.75rem"
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setShowConfirmPassword(!showConfirmPassword);
+                }}
+              >
+                {showConfirmPassword ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+        <FormControl id="profile-picture">
+          <FormLabel>Upload your picture</FormLabel>
+          <Input
+            type="file"
+            p={1.5}
+            accept="image/*"
+            placeholder="Enter your email"
+            onChange={(e) => handleUploadPic(e?.target?.files[0])}
+          />
+        </FormControl>
+        <Button
+          colorScheme="teal"
+          variant="solid"
+          width="100%"
+          style={{ marginTop: 15 }}
+          isLoading={isLoading}
+          type="submit"
+        >
+          Sign Up
+        </Button>
+      </VStack>
+    </form>
   );
 };
 

@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../common";
 
 const Login = () => {
   const [email, setEmail] = useState<string | null>();
@@ -22,7 +23,6 @@ const Login = () => {
   const history = useHistory();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    console.log(e);
     e.preventDefault();
     setIsLoading(true);
     if (!email || !password) {
@@ -36,9 +36,23 @@ const Login = () => {
       setIsLoading(false);
       return;
     }
+    if (email) {
+      const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "Invalid email",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
 
     axios
-      .post("http://localhost:5000/api/user/login", {
+      .post(`${BASE_URL}api/user/login`, {
         email,
         password,
       })
