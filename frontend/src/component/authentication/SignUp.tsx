@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FormEvent, useState } from "react";
 import {
   Button,
@@ -26,7 +27,7 @@ const SignUp = () => {
   const toast = useToast();
   const history = useHistory();
 
-  const handleUploadPic = (file) => {
+  const handleUploadPic = (file: Blob) => {
     setIsLoading(true);
     if (file === undefined) {
       toast({
@@ -218,7 +219,8 @@ const SignUp = () => {
             p={1.5}
             accept="image/*"
             placeholder="Enter your email"
-            onChange={(e) => handleUploadPic(e?.target?.files[0])}
+            // @ts-ignore
+            onChange={(e) => handleUploadPic(e.target.files[0])}
           />
         </FormControl>
         <Button
