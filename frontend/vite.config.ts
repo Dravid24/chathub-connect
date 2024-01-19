@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ["dependency-to-exclude"],
+    exclude: ["react-dom/client"],
   },
   server: {
     port: 3000,
