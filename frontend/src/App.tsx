@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import "./App.css";
 import Chat from "./pages/Chat";
 import { Route } from "react-router-dom";

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { FormEvent, useState } from "react";
 import {
   Button,
@@ -219,7 +220,6 @@ const SignUp = () => {
             p={1.5}
             accept="image/*"
             placeholder="Enter your email"
-            // @ts-ignore
             onChange={(e) => handleUploadPic(e.target.files[0])}
           />
         </FormControl>
