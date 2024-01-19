@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { BASE_URL } from "../../common";
 
 const SignUp = () => {
   const [name, setName] = useState<string | null>();
@@ -120,7 +119,7 @@ const SignUp = () => {
     }
 
     axios
-      .post(`${BASE_URL}api/user/register`, {
+      .post(`/api/user/register`, {
         name,
         email,
         password,
