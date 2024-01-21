@@ -1,5 +1,7 @@
+import UnderConstruction from "./UnderConstruction";
+
 const Chat = () => {
-  return <div>chat</div>;
+  return <UnderConstruction />;
 };
 
 export default Chat;

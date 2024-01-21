@@ -13,3 +13,10 @@
   -webkit-text-fill-color: transparent;
   text-align: center;
 }
+
+.under-development-image {
+  width: 400px;
+  height: 300px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
