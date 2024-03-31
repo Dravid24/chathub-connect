@@ -97,8 +97,8 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
                 {chats.map((chat) => (
                   <Box
                     cursor="pointer"
-                    bg={selectedChat._id === chat._id ? "#319795" : "#EDEBED"}
-                    color={selectedChat._id === chat._id ? "white" : "black"}
+                    bg={selectedChat?._id === chat._id ? "#319795" : "#EDEBED"}
+                    color={selectedChat?._id === chat._id ? "white" : "black"}
                     px={4}
                     py={3}
                     borderRadius="lg"
