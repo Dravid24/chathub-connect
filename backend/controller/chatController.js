@@ -74,8 +74,8 @@ const createGroup = asyncHandler(async (req, res) => {
   }
 
   let users = req.body.users;
-
-  if (users.length > 2) {
+  console.log("abcd", users, users.length);
+  if (users.length < 2) {
     return res
       .status(400)
       .send("More than two members is required to create a group");

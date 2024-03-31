@@ -31,7 +31,7 @@ const ProfileSideBar = ({
   const history = useHistory();
 
   const handleLogout = () => {
-    localStorage.removeItem("loginInfo");
+    localStorage.clear();
     history.push("/");
   };
   return (

@@ -31,6 +31,7 @@
 }
 
 .search-result {
+  width: 100%;
   max-height: 300px;
   overflow: auto;
 }
@@ -44,4 +45,15 @@
 .search-result-list:hover {
   background-color: #ededed;
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.28);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

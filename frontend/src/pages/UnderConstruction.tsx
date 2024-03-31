@@ -12,7 +12,7 @@ const UnderConstruction = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("loginInfo");
+    localStorage.clear();
     history.push("/");
   };
 

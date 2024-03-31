@@ -15,10 +15,14 @@ import {
   useDisclosure,
   List,
   ListItem,
+  Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { BellIcon, Search2Icon } from "@chakra-ui/icons";
 import React, { useState } from "react";
 import ProfileSideBar from "./ProfileSideBar";
+import axios from "axios";
+import { ChatState } from "../Context/ChatProvider";
 
 type headerProps = {
   user: {
@@ -32,7 +36,13 @@ type headerProps = {
 
 const Header = ({ user }: headerProps) => {
   const [isOpenProfile, setIsOpenProfile] = useState(false);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
+  const [searchResult, setSearchResult] = useState<headerProps["user"][]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
 
+  const { setSelectedChat, chats, setChats } = ChatState();
+
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -41,14 +51,64 @@ const Header = ({ user }: headerProps) => {
     setIsOpenProfile(false);
   };
 
-  const data = [
-    {
-      email: "dravid@gmail.com",
-      name: "dravid",
-      profileUrl:
-        "https://res.cloudinary.com/dh6zaartt/image/upload/v1704211103/n9aczmu8518qbecj7knj.jpg",
-    },
-  ];
+  const handleSearch = (event: { target: { value: string } }) => {
+    const search = event?.target?.value;
+    setSearchValue(search);
+    if (search === "") {
+      return setSearchResult([]);
+    }
+    setIsLoadingUser(true);
+    axios
+      .get(`/api/user?search=${search}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
+      .then((res) => {
+        setSearchResult(res.data);
+        setIsLoadingUser(false);
+      })
+      .catch(() => {
+        setIsLoadingUser(false);
+        toast({
+          title: "Error Occured",
+          description: "Failed to load search result",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
+
+  const handleSelectedChat = (id: string) => {
+    axios
+      .post(
+        "/api/chat",
+        { userId: id },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      )
+      .then((res) => {
+        if (!chats.find((c: { _id: string }) => c._id === res.data._id)) {
+          setChats([res?.data, ...chats]);
+        }
+        setSelectedChat(res?.data);
+        setSearchResult([]);
+        onClose();
+      })
+      .catch((error) => {
+        setSearchResult([]);
+        onClose();
+        toast({
+          title: "Unable to fetch chat",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
 
   return (
     <>
@@ -111,31 +171,46 @@ const Header = ({ user }: headerProps) => {
                   placeholder="Search User"
                   ref={initialRef}
                   mb={3}
+                  onChange={handleSearch}
                 />
               </InputGroup>
-              <div className="search-result">
-                {data?.map((user, i) => {
-                  return (
-                    <List spacing={3} key={i}>
-                      <ListItem className="search-result-list">
-                        <Image
-                          borderRadius="full"
-                          boxSize="40px"
-                          src={user.profileUrl}
-                          alt={user.name}
-                          boxShadow="0px 0px 4px 0px black"
-                        />
-                        <div style={{ marginLeft: "10px" }}>
-                          <Text as="b">{user.name}</Text>
-                          <Text fontSize="md" mt={"-8px"}>
-                            {user.email}
-                          </Text>
-                        </div>
-                      </ListItem>
-                    </List>
-                  );
-                })}
-              </div>
+              {!isLoadingUser && searchValue && searchResult.length === 0 && (
+                <div style={{ textAlign: "center", padding: "10px" }}>
+                  No Result Found
+                </div>
+              )}
+              {isLoadingUser ? (
+                <div style={{ textAlign: "center", padding: "20px" }}>
+                  <Spinner />
+                </div>
+              ) : (
+                <div className="search-result">
+                  {searchResult?.map((user, i) => {
+                    return (
+                      <List spacing={3} key={i}>
+                        <ListItem
+                          className="search-result-list"
+                          onClick={() => handleSelectedChat(user._id)}
+                        >
+                          <Image
+                            borderRadius="full"
+                            boxSize="40px"
+                            src={user.profileUrl}
+                            alt={user.name}
+                            boxShadow="0px 0px 4px 0px black"
+                          />
+                          <div style={{ marginLeft: "10px" }}>
+                            <Text as="b">{user.name}</Text>
+                            <Text fontSize="md" mt={"-8px"}>
+                              {user.email}
+                            </Text>
+                          </div>
+                        </ListItem>
+                      </List>
+                    );
+                  })}
+                </div>
+              )}
             </ModalBody>
           </ModalContent>
         </Modal>
