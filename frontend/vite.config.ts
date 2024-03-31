@@ -10,9 +10,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: isProduction
-          ? "https://chathub-connect.onrender.com"
-          : "http://localhost:5000",
+        target: "https://chathub-connect.onrender.com",
         changeOrigin: true,
         secure: false,
       },
