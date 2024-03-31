@@ -47,13 +47,12 @@ const EditGroupModal = ({
   const [groupName, setGroupName] = useState<string>();
   const [isEditGroupName, setIsEditGroupName] = useState<boolean>(false);
   const [isRenameLoading, setIsRenameLoading] = useState<boolean>(false);
-  const [selectedUsers, setSelectedUsers] = useState<headerProps["user"][]>([]);
   const [searchResult, setSearchResult] = useState<headerProps["user"][]>([]);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
 
   const toast = useToast();
 
-  const { chats, setChats, selectedChat, setSelectedChat } = ChatState();
+  const { selectedChat, setSelectedChat } = ChatState();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
