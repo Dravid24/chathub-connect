@@ -20,3 +20,40 @@
   margin-top: 50px;
   margin-bottom: 50px;
 }
+
+.profile-title {
+  font-weight: 700;
+  background: -webkit-linear-gradient(left, #319795, #4fd1cf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: medium;
+  margin-top: 10px;
+}
+
+.search-result {
+  width: 100%;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.search-result-list {
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+}
+
+.search-result-list:hover {
+  background-color: #ededed;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.28);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
