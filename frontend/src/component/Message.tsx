@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Menu,
@@ -14,7 +13,7 @@ import { Dispatch, SetStateAction } from "react";
 import { LiaEllipsisVSolid } from "react-icons/lia";
 import axios from "axios";
 import EditGroupModal from "./EditGroupModal";
-import UnderConstruction from "../pages/UnderConstruction";
+// import UnderConstruction from "../pages/UnderConstruction";
 
 type messageProps = {
   user: {
@@ -138,7 +137,7 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
             overflowY={"hidden"}
             bg={"#f5f5f5"}
           >
-            <UnderConstruction />
+            {/* <UnderConstruction /> */}
           </Box>
         </>
       ) : (

@@ -9,7 +9,7 @@ import {
   Image,
   Text,
 } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 type sideBarProps = {
   isOpenProfile: boolean;
@@ -28,11 +28,11 @@ const ProfileSideBar = ({
   onCloseProfile,
   user,
 }: sideBarProps) => {
-  const history = useHistory();
+  // const history = useHistory();
 
   const handleLogout = () => {
     localStorage.clear();
-    history.push("/");
+    // history.push("/");
   };
   return (
     <Drawer isOpen={isOpenProfile} placement="right" onClose={onCloseProfile}>

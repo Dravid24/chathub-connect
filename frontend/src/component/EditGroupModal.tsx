@@ -22,8 +22,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
-import { MdEdit } from "react-icons/md";
-import { IoCheckmarkSharp } from "react-icons/io5";
+// import { MdEdit } from "react-icons/md";
+// import { IoCheckmarkSharp } from "react-icons/io5";
 
 type headerProps = {
   children: any;
@@ -251,11 +251,11 @@ const EditGroupModal = ({
                 p={0}
                 isLoading={isRenameLoading}
               >
-                {isEditGroupName ? (
+                {/* {isEditGroupName ? (
                   <IoCheckmarkSharp fontSize={25} />
                 ) : (
                   <MdEdit fontSize={25} />
-                )}
+                )} */}
               </Button>
             </FormControl>
             <Text w={"100%"} p={2} as="b">
