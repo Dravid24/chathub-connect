@@ -92,9 +92,9 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
       >
         {chats ? (
           <div>
-            {chats.length > 0 ? (
+            {chats?.length > 0 ? (
               <Stack overflowY="scroll">
-                {chats.map((chat) => (
+                {chats?.map((chat) => (
                   <Box
                     cursor="pointer"
                     bg={selectedChat?._id === chat._id ? "#319795" : "#EDEBED"}
