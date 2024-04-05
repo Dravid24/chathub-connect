@@ -251,11 +251,11 @@ const EditGroupModal = ({
                 p={0}
                 isLoading={isRenameLoading}
               >
-                {/* {isEditGroupName ? (
+                {isEditGroupName ? (
                   <IoCheckmarkSharp fontSize={25} />
                 ) : (
                   <MdEdit fontSize={25} />
-                )} */}
+                )}
               </Button>
             </FormControl>
             <Text w={"100%"} p={2} as="b">
