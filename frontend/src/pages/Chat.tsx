@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import Header from "../component/Header";
