@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./router/userRouters");
 const chatRoutes = require("./router/chatRoutes");
+const messageRoutes = require("./router/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/message", messageRoutes);
 
 //-----deployment
 const __dirname1 = path.resolve();
