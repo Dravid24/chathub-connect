@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Avatar,
   Box,
   Menu,
   MenuButton,
@@ -15,6 +16,7 @@ import { LiaEllipsisVSolid } from "react-icons/lia";
 import axios from "axios";
 import EditGroupModal from "./EditGroupModal";
 import MessageDetails from "./MessageDetails";
+import { generateRandomDarkColor } from "../common/util";
 
 type messageProps = {
   user: {
@@ -35,6 +37,12 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
 
   const getSenderName = (currentUser, users) => {
     return users[0]._id === currentUser._id ? users[1].name : users[0].name;
+  };
+
+  const getSenderProfile = (currentUser, users) => {
+    return users[0]._id === currentUser._id
+      ? users[1].profileUrl
+      : users[0].profileUrl;
   };
 
   const handleLeave = (user) => {
@@ -91,12 +99,30 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
           >
             <Box display="flex">
               <ArrowBackIcon
-                fontSize="2xl"
+                fontSize="xl"
                 display={{ base: "flex", md: "none" }}
                 cursor="pointer"
                 mr={3}
                 mt={1}
                 onClick={() => setSelectedChat("")}
+              />
+              <Avatar
+                mr={4}
+                size="sm"
+                name={
+                  !selectedChat.isGroupChat
+                    ? getSenderName(user, selectedChat?.users)
+                    : selectedChat.chatName
+                }
+                src={
+                  !selectedChat.isGroupChat
+                    ? getSenderProfile(user, selectedChat?.users)
+                    : selectedChat.chatName
+                }
+                bg={generateRandomDarkColor()}
+                color={"#fff"}
+                cursor="pointer"
+                boxShadow="0px 0px 2px 0px black"
               />
               {!selectedChat.isGroupChat ? (
                 <>{getSenderName(user, selectedChat.users)}</>
@@ -107,7 +133,7 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
             {selectedChat.isGroupChat && (
               <Menu>
                 <MenuButton mr={3}>
-                  <LiaEllipsisVSolid />
+                  <LiaEllipsisVSolid fontSize={25} />
                 </MenuButton>
                 <MenuList>
                   <EditGroupModal

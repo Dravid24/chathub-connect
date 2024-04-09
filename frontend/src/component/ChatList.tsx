@@ -1,10 +1,19 @@
 import React from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Box, Button, Stack, useToast, Text, Skeleton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Stack,
+  useToast,
+  Text,
+  Skeleton,
+  Avatar,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import CreateGroupModal from "./CreateGroupModal";
+import { generateRandomDarkColor } from "../common/util";
 
 type headerProps = {
   user: {
@@ -55,6 +64,12 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
     return users[0]._id === currentUser._id ? users[1].name : users[0].name;
   };
 
+  const getSenderProfile = (currentUser, users) => {
+    return users[0]._id === currentUser._id
+      ? users[1].profileUrl
+      : users[0].profileUrl;
+  };
+
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -95,13 +110,15 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
         borderRadius="lg"
         overflowY="hidden"
         bg={"F8F8F8"}
+        overflow="scroll"
       >
         {chats ? (
-          <div>
+          <>
             {chats?.length > 0 ? (
-              <Stack overflowY="scroll">
+              <Stack overflow="scroll">
                 {chats?.map((chat) => (
                   <Box
+                    display={"flex"}
                     cursor="pointer"
                     bg={selectedChat?._id === chat._id ? "#319795" : "#EDEBED"}
                     color={selectedChat?._id === chat._id ? "white" : "black"}
@@ -111,11 +128,48 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
                     key={chat._id}
                     onClick={() => setSelectedChat(chat)}
                   >
-                    <Text as="b">
-                      {!chat.isGroupChat
-                        ? getSenderName(user, chat?.users)
-                        : chat.chatName}
-                    </Text>
+                    <Avatar
+                      mr={4}
+                      size="md"
+                      name={
+                        !chat.isGroupChat
+                          ? getSenderName(user, chat?.users)
+                          : chat.chatName
+                      }
+                      src={
+                        !chat.isGroupChat
+                          ? getSenderProfile(user, chat?.users)
+                          : chat.chatName
+                      }
+                      bg={generateRandomDarkColor()}
+                      color={"#fff"}
+                      cursor="pointer"
+                      boxShadow="0px 0px 2px 0px black"
+                    />
+                    <div>
+                      <Text as="b">
+                        {!chat.isGroupChat
+                          ? getSenderName(user, chat?.users)
+                          : chat.chatName}
+                      </Text>
+                      {chat.latestMsg && (
+                        <Text
+                          fontSize="sm"
+                          color={
+                            selectedChat?._id === chat._id
+                              ? "#ededed"
+                              : "#949494"
+                          }
+                        >
+                          {chat.isGroupChat && (
+                            <b>{chat.latestMsg.sender.name} : </b>
+                          )}
+                          {chat.latestMsg.content.length > 50
+                            ? chat.latestMsg.content.substring(0, 51) + "..."
+                            : chat.latestMsg.content}
+                        </Text>
+                      )}
+                    </div>
                   </Box>
                 ))}
               </Stack>
@@ -124,7 +178,7 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
                 No chat found, Please search user for chat
               </Text>
             )}
-          </div>
+          </>
         ) : (
           <Stack>
             <Skeleton height="48px" />

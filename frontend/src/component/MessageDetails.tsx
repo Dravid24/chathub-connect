@@ -167,6 +167,7 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
       flexDir={"column"}
       justifyContent={"flex-end"}
       p={3}
+      pt={0}
       w={"100%"}
       h={"100%"}
       overflowY={"hidden"}
