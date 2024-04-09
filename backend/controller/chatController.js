@@ -59,7 +59,6 @@ const fetchChats = asyncHandler(async (req, res) => {
           path: "latestMsg.sender",
           select: "name profileUrl email",
         });
-        console.log(result);
         res.status(200).send(result);
       });
   } catch (error) {
@@ -74,7 +73,6 @@ const createGroup = asyncHandler(async (req, res) => {
   }
 
   let users = req.body.users;
-  console.log("abcd", users, users.length);
   if (users.length < 2) {
     return res
       .status(400)

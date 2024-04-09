@@ -67,8 +67,6 @@ const getUsers = async (req, res) => {
         ],
       }
     : {};
-
-  console.log(req);
   const listOfUsers = await User.find(searchKeyword).find({
     _id: { $ne: req.user._id },
   });
