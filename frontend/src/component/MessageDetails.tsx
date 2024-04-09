@@ -8,14 +8,6 @@ import {
   Avatar,
   Tooltip,
   Image,
-  Popover,
-  Button,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
 } from "@chakra-ui/react";
 import { IoMdSend } from "react-icons/io";
 import { ChatState } from "../Context/ChatProvider";

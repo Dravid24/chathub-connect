@@ -28,7 +28,12 @@ const ChatList = ({ user, isLoadChatList }: headerProps) => {
         headers: { Authorization: `Bearer ${user.token}` },
       })
       .then((res) => {
-        setChats(res?.data);
+        const sortedData = res?.data?.sort((a, b) => {
+          const dateA = new Date(a.updatedAt);
+          const dateB = new Date(b.updatedAt);
+          return dateB - dateA;
+        });
+        setChats(sortedData);
       })
       .catch(() => {
         toast({
