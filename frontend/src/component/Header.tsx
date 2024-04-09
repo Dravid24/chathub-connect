@@ -147,7 +147,6 @@ const Header = ({ user }: headerProps) => {
             </MenuButton>
             <MenuList pl={2}>
               {!notification.length && "No New messages"}
-              {console.log({ notification })}
               {notification.map((n) => (
                 <MenuItem
                   key={n._id}

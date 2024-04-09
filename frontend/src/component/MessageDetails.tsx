@@ -8,6 +8,14 @@ import {
   Avatar,
   Tooltip,
   Image,
+  Popover,
+  Button,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
 } from "@chakra-ui/react";
 import { IoMdSend } from "react-icons/io";
 import { ChatState } from "../Context/ChatProvider";
@@ -21,6 +29,8 @@ import {
 } from "../common/util";
 import io from "socket.io-client";
 import typingIcon from "../assets/typing.gif";
+import EmojiPicker from "emoji-picker-react";
+import { BsEmojiSmile } from "react-icons/bs";
 
 // const ENDPOINT = "http://localhost:5000"; // development
 const ENDPOINT = "https://chathub-connect.onrender.com"; // production
@@ -33,6 +43,7 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
   const [socketConnection, setSocketConnection] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [isShowEmoji, setIsShowEmoji] = useState(false);
 
   const { selectedChat, notification, setNotification } = ChatState();
 
@@ -98,6 +109,7 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
   const handleSendMessage = async (e) => {
     if ((e.key === "Enter" || e.key === undefined) && currentMsg) {
       setCurrentMsg("");
+      setIsShowEmoji(false);
       socket.emit("stop typing", selectedChat._id);
       axios
         .post(
@@ -126,9 +138,8 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
         });
     }
   };
-  const handleMessageChange = (e) => {
-    setCurrentMsg(e.target.value);
 
+  const handleTyping = () => {
     if (!socketConnection) return;
 
     if (!typing) {
@@ -146,6 +157,16 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
         setTyping(false);
       }
     }, timer);
+  };
+
+  const handleMessageChange = (e) => {
+    setCurrentMsg(e);
+    handleTyping();
+  };
+
+  const onEmojiClick = (e) => {
+    setCurrentMsg((prevInput) => prevInput + e.emoji);
+    handleTyping();
   };
 
   return (
@@ -213,19 +234,32 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
       {isTyping && (
         <Image src={typingIcon} alt="Typing..." w={16} ml="25px" mb="-10px" />
       )}
+      <EmojiPicker
+        open={isShowEmoji}
+        width="100%"
+        height="350px"
+        onEmojiClick={onEmojiClick}
+        previewConfig={{ showPreview: false }}
+        style={{ marginTop: "10px", marginBottom: "-10px" }}
+      />
       <FormControl
         onKeyDown={handleSendMessage}
         isRequired
         mt={3}
         display="flex"
       >
+        <BsEmojiSmile
+          onClick={() => setIsShowEmoji(!isShowEmoji)}
+          fontSize="25"
+          style={{ margin: "auto", marginRight: "10px", cursor: "pointer" }}
+        />
         <Input
           variant="outline"
           bgColor="#fff"
           size="lg"
           placeholder="Type a message"
           value={currentMsg}
-          onChange={handleMessageChange}
+          onChange={(e) => handleMessageChange(e.target.value)}
         />
         <IoMdSend
           onClick={handleSendMessage}
