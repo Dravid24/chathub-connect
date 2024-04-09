@@ -57,6 +57,7 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
 
   useEffect(() => {
     getAllMessage();
+    setIsShowEmoji(false);
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
