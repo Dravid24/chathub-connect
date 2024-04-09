@@ -14,7 +14,7 @@ import { Dispatch, SetStateAction } from "react";
 import { LiaEllipsisVSolid } from "react-icons/lia";
 import axios from "axios";
 import EditGroupModal from "./EditGroupModal";
-import UnderConstruction from "../pages/UnderConstruction";
+import MessageDetails from "./MessageDetails";
 
 type messageProps = {
   user: {
@@ -129,17 +129,7 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
               </Menu>
             )}
           </Box>
-          <Box
-            display={"flex"}
-            flexDir={"column"}
-            p={3}
-            w={"100%"}
-            h={"100%"}
-            overflowY={"hidden"}
-            bg={"#f5f5f5"}
-          >
-            <UnderConstruction />
-          </Box>
+          <MessageDetails user={user} />
         </>
       ) : (
         <Box
