@@ -17,6 +17,8 @@ import {
   ListItem,
   Spinner,
   useToast,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { BellIcon, Search2Icon } from "@chakra-ui/icons";
 import React, { useState } from "react";
@@ -40,7 +42,8 @@ const Header = ({ user }: headerProps) => {
   const [searchResult, setSearchResult] = useState<headerProps["user"][]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const { setSelectedChat, chats, setChats } = ChatState();
+  const { setSelectedChat, chats, setChats, notification, setNotification } =
+    ChatState();
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,6 +52,10 @@ const Header = ({ user }: headerProps) => {
 
   const onCloseProfile = () => {
     setIsOpenProfile(false);
+  };
+
+  const getSenderName = (currentUser, users) => {
+    return users[0]._id === currentUser._id ? users[1].name : users[0].name;
   };
 
   const handleSearch = (event: { target: { value: string } }) => {
@@ -132,9 +139,36 @@ const Header = ({ user }: headerProps) => {
         </InputGroup>
         <div>
           <Menu>
-            <MenuButton p={1}>
-              <BellIcon fontSize="2xl" m={1} mr={4} />
+            <MenuButton p={1} m={1} mr={4}>
+              <BellIcon fontSize="2xl" />
+              {notification.length > 0 && (
+                <span className="badge">{notification.length}</span>
+              )}
             </MenuButton>
+            <MenuList pl={2}>
+              {!notification.length && "No New messages"}
+              {console.log({ notification })}
+              {notification.map((n) => (
+                <MenuItem
+                  key={n._id}
+                  onClick={() => {
+                    setSelectedChat(n.chat);
+                    setNotification(
+                      notification.filter((notif) => {
+                        notif !== n;
+                      })
+                    );
+                  }}
+                >
+                  New message from &nbsp;
+                  <b>
+                    {n.chat.isGroupChat
+                      ? `${n.chat.chatName}`
+                      : `${getSenderName(user, n.chat.users)}`}
+                  </b>
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
           <Avatar
             m="4px"

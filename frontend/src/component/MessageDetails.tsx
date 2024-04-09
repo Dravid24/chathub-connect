@@ -26,7 +26,7 @@ import typingIcon from "../assets/typing.gif";
 const ENDPOINT = "https://chathub-connect.onrender.com"; // production
 let socket, selectedChatCompare;
 
-const MessageDetails = ({ user }) => {
+const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentMsg, setCurrentMsg] = useState("");
   const [allMessages, setAllMessages] = useState([]);
@@ -34,7 +34,7 @@ const MessageDetails = ({ user }) => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
-  const { selectedChat } = ChatState();
+  const { selectedChat, notification, setNotification } = ChatState();
 
   const toast = useToast();
 
@@ -63,7 +63,10 @@ const MessageDetails = ({ user }) => {
         !selectedChatCompare ||
         selectedChatCompare._id != msgRecieved.chat._id
       ) {
-        // notification
+        if (!notification.includes(msgRecieved)) {
+          setNotification([msgRecieved, ...notification]);
+          setIsLoadChatList(!isLoadChatList);
+        }
       } else {
         setAllMessages([...allMessages, msgRecieved]);
       }

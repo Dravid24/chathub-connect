@@ -64,3 +64,13 @@
   overflow-y: scroll;
   scrollbar-width: none;
 }
+
+.badge {
+  background-color: red;
+  color: white;
+  padding: 0px 4px;
+  text-align: center;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-left: -10px;
+}

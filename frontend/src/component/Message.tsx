@@ -129,7 +129,11 @@ const Message = ({ user, isLoadChatList, setIsLoadChatList }: messageProps) => {
               </Menu>
             )}
           </Box>
-          <MessageDetails user={user} />
+          <MessageDetails
+            user={user}
+            isLoadChatList={isLoadChatList}
+            setIsLoadChatList={setIsLoadChatList}
+          />
         </>
       ) : (
         <Box
