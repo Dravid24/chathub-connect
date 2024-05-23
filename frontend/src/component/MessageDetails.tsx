@@ -8,8 +8,11 @@ import {
   Avatar,
   Tooltip,
   Image,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { IoMdSend } from "react-icons/io";
+import { FaMicrophone } from "react-icons/fa";
 import { ChatState } from "../Context/ChatProvider";
 import axios from "axios";
 import ScrollableFeed from "react-scrollable-feed";
@@ -23,6 +26,11 @@ import io from "socket.io-client";
 import typingIcon from "../assets/typing.gif";
 import EmojiPicker from "emoji-picker-react";
 import { BsEmojiSmile } from "react-icons/bs";
+import { MdOutlineStopCircle } from "react-icons/md";
+import "regenerator-runtime";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 // const ENDPOINT = "http://localhost:5000"; // development
 const ENDPOINT = "https://chathub-connect.onrender.com"; // production
@@ -36,16 +44,25 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isShowEmoji, setIsShowEmoji] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(false);
 
   const { selectedChat, notification, setNotification } = ChatState();
 
   const toast = useToast();
+
+  const { transcript, browserSupportsSpeechRecognition } =
+    useSpeechRecognition();
 
   const config = {
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
   };
+
+  useEffect(() => {
+    setCurrentMsg(transcript);
+    handleTyping();
+  }, [transcript]);
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -162,6 +179,17 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
     handleTyping();
   };
 
+  const handleVoiceToText = () => {
+    setIsMicOn(true);
+    SpeechRecognition.startListening();
+    handleTyping();
+  };
+
+  const handleStop = () => {
+    SpeechRecognition.stopListening();
+    setIsMicOn(false);
+  };
+
   return (
     <Box
       display={"flex"}
@@ -247,14 +275,51 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
           fontSize="25"
           style={{ margin: "auto", marginRight: "10px", cursor: "pointer" }}
         />
-        <Input
-          variant="outline"
-          bgColor="#fff"
-          size="lg"
-          placeholder="Type a message"
-          value={currentMsg}
-          onChange={(e) => handleMessageChange(e.target.value)}
-        />
+        <InputGroup>
+          <Input
+            variant="outline"
+            bgColor="#fff"
+            size="lg"
+            placeholder="Type a message"
+            value={currentMsg}
+            onChange={(e) => handleMessageChange(e.target.value)}
+          />
+          <Tooltip
+            label={
+              !browserSupportsSpeechRecognition
+                ? "Microphone not supported on this device"
+                : isMicOn
+                ? "Click to stop speaking"
+                : "Click to start speaking"
+            }
+            placement="bottom-start"
+            hasArrow
+          >
+            <InputRightElement
+              m={"5px"}
+              cursor="pointer"
+              onClick={() => (isMicOn ? handleStop() : handleVoiceToText())}
+            >
+              {isMicOn ? (
+                <MdOutlineStopCircle
+                  className="animate-pulse"
+                  size={25}
+                  style={{
+                    margin: "auto",
+                    borderRadius: "50px",
+                  }}
+                />
+              ) : (
+                <FaMicrophone
+                  color="black"
+                  size={20}
+                  style={{ margin: "auto" }}
+                />
+              )}
+            </InputRightElement>
+          </Tooltip>
+        </InputGroup>
+
         <IoMdSend
           onClick={handleSendMessage}
           fontSize="30"
