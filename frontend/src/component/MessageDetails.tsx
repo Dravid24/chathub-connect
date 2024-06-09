@@ -31,6 +31,7 @@ import "regenerator-runtime";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { PiSpeakerHighBold } from "react-icons/pi";
 
 // const ENDPOINT = "http://localhost:5000"; // development
 const ENDPOINT = "https://chathub-connect.onrender.com"; // production
@@ -190,6 +191,11 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
     setIsMicOn(false);
   };
 
+  const handleSpeak = (text) => {
+    const value = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(value);
+  };
+
   return (
     <Box
       display={"flex"}
@@ -226,28 +232,58 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
                     />
                   </Tooltip>
                 )}
-                <div
-                  style={{
-                    backgroundColor: `${
-                      message.sender._id === user._id ? "#B9F5D0" : "#fff"
-                    }`,
-                    marginLeft: isSameSenderMargin(
-                      allMessages,
-                      message,
-                      i,
-                      user._id
-                    ),
-                    marginTop: isSameUser(allMessages, message, i, user._id)
-                      ? 3
-                      : 10,
-                    borderRadius: "6px",
-                    padding: "5px 15px",
-                    maxWidth: "75%",
-                    width: "fit-content",
-                  }}
-                >
-                  {message.content}
-                </div>
+                <>
+                  <div
+                    style={{
+                      marginTop: isSameUser(allMessages, message, i, user._id)
+                        ? 3
+                        : 10,
+                      marginLeft: isSameSenderMargin(
+                        allMessages,
+                        message,
+                        i,
+                        user._id
+                      ),
+                      maxWidth: "75%",
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex" }}
+                      className="indidual-message"
+                    >
+                      {message.sender._id === user._id && (
+                        <span
+                          className="voiceSpeaker"
+                          onClick={() => handleSpeak(message.content)}
+                          style={{ margin: "auto", marginRight: "5px" }}
+                        >
+                          <PiSpeakerHighBold />
+                        </span>
+                      )}
+                      <div
+                        style={{
+                          backgroundColor: `${
+                            message.sender._id === user._id ? "#B9F5D0" : "#fff"
+                          }`,
+                          borderRadius: "6px",
+                          padding: "5px 15px",
+                          width: "fit-content",
+                        }}
+                      >
+                        {message.content}
+                      </div>
+                      {message.sender._id !== user._id && (
+                        <span
+                          className="voiceSpeaker"
+                          onClick={() => handleSpeak(message.content)}
+                          style={{ margin: "auto", marginLeft: "5px" }}
+                        >
+                          <PiSpeakerHighBold />
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </>
               </div>
             ))}
           </ScrollableFeed>
