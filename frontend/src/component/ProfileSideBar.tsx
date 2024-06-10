@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowBackIcon, LockIcon } from "@chakra-ui/icons";
 import {
   Drawer,
@@ -9,8 +9,10 @@ import {
   DrawerFooter,
   Image,
   Text,
+  Select,
 } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import { languageList } from "../common/languages";
 
 type sideBarProps = {
   isOpenProfile: boolean;
@@ -29,11 +31,24 @@ const ProfileSideBar = ({
   onCloseProfile,
   user,
 }: sideBarProps) => {
+  const [selectedLang, setSelectedLang] = useState("ta");
   const history = useHistory();
+
+  useEffect(() => {
+    const currentLang = localStorage.getItem("translateLang");
+    currentLang
+      ? setSelectedLang(currentLang)
+      : localStorage.setItem("translateLang", "ta");
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
     history.push("/");
+  };
+
+  const handleSelectLanguage = (e) => {
+    localStorage.setItem("translateLang", e.target.value);
+    setSelectedLang(e.target.value);
   };
   return (
     <Drawer isOpen={isOpenProfile} placement="right" onClose={onCloseProfile}>
@@ -63,6 +78,22 @@ const ProfileSideBar = ({
           <Text fontSize="xl">{user.name}</Text>
           <Text className="profile-title">Email</Text>
           <Text fontSize="xl">{user.email}</Text>
+          <Text className="profile-title">Choose language for translate</Text>
+          <Select
+            placeholder="Select option"
+            mt={3}
+            value={selectedLang}
+            onChange={handleSelectLanguage}
+          >
+            {Object.keys(languageList).map((key, index) => {
+              const language = languageList[key];
+              return (
+                <option key={index} value={key}>
+                  {language.name}
+                </option>
+              );
+            })}
+          </Select>
         </DrawerBody>
 
         <DrawerFooter borderTopWidth="1px">

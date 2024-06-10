@@ -87,3 +87,12 @@
     box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
   }
 }
+
+.messageOptions {
+  visibility: hidden;
+  cursor: pointer;
+}
+
+.indidual-message:hover .messageOptions {
+  visibility: visible;
+}

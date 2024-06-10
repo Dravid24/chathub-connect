@@ -10,6 +10,10 @@ import {
   Image,
   InputGroup,
   InputRightElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 import { IoMdSend } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa";
@@ -32,6 +36,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { PiSpeakerHighBold } from "react-icons/pi";
+import { BiChevronDown } from "react-icons/bi";
 
 // const ENDPOINT = "http://localhost:5000"; // development
 const ENDPOINT = "https://chathub-connect.onrender.com"; // production
@@ -196,6 +201,43 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
     window.speechSynthesis.speak(value);
   };
 
+  const handleTranslate = async (messageId, text) => {
+    const translateLang = localStorage.getItem("translateLang");
+    try {
+      const url = `https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=${translateLang}&api-version=3.0&profanityAction=NoAction&textType=plain`;
+      const options = {
+        headers: {
+          "Content-Type": "application/json",
+          "X-RapidAPI-Key":
+            "f4e0322e30mshab5ce59c58fe572p1813aejsnd047a8ad310d",
+          "X-RapidAPI-Host": "microsoft-translator-text.p.rapidapi.com",
+        },
+      };
+      const data = [
+        {
+          Text: text,
+        },
+      ];
+
+      const response = await axios.post(url, data, options);
+      const responseObject = response.data;
+      const translatedText = responseObject[0].translations[0].text;
+      const updatedMessages = allMessages.map((msg) =>
+        msg._id === messageId ? { ...msg, content: translatedText } : msg
+      );
+      setAllMessages(updatedMessages);
+    } catch (error) {
+      toast({
+        title: "Error Occurred",
+        description: "Failed to translate message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
+  };
+
   return (
     <Box
       display={"flex"}
@@ -253,11 +295,28 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
                     >
                       {message.sender._id === user._id && (
                         <span
-                          className="voiceSpeaker"
-                          onClick={() => handleSpeak(message.content)}
-                          style={{ margin: "auto", marginRight: "5px" }}
+                          className="messageOptions"
+                          style={{ margin: "auto", marginLeft: "5px" }}
                         >
-                          <PiSpeakerHighBold />
+                          <Menu>
+                            <MenuButton>
+                              <BiChevronDown size={20} />
+                            </MenuButton>
+                            <MenuList>
+                              <MenuItem
+                                onClick={() => handleSpeak(message.content)}
+                              >
+                                Speak
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() =>
+                                  handleTranslate(message._id, message.content)
+                                }
+                              >
+                                Translate
+                              </MenuItem>
+                            </MenuList>
+                          </Menu>
                         </span>
                       )}
                       <div
@@ -274,14 +333,38 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
                       </div>
                       {message.sender._id !== user._id && (
                         <span
-                          className="voiceSpeaker"
-                          onClick={() => handleSpeak(message.content)}
+                          className="messageOptions"
                           style={{ margin: "auto", marginLeft: "5px" }}
                         >
-                          <PiSpeakerHighBold />
+                          <Menu>
+                            <MenuButton>
+                              <BiChevronDown size={20} />
+                            </MenuButton>
+                            <MenuList>
+                              <MenuItem
+                                onClick={() => handleSpeak(message.content)}
+                              >
+                                Speak
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() =>
+                                  handleTranslate(message._id, message.content)
+                                }
+                              >
+                                Translate
+                              </MenuItem>
+                            </MenuList>
+                          </Menu>
                         </span>
                       )}
                     </div>
+                    {/* <span
+                      onClick={() =>
+                        handleTranslate(message._id, message.content)
+                      }
+                    >
+                      Translate
+                    </span> */}
                   </div>
                 </>
               </div>
