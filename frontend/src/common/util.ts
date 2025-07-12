@@ -58,3 +58,14 @@ export function generateRandomDarkColor() {
 
   return color;
 }
+
+export const isAllPersonsReadMessage = (message, userId) => {
+  const filteredUsers = message.chat.users.filter((id) => id !== userId);
+  const filteredReadBy = message.readBy.filter((id) => id !== userId);
+
+  const allUserReadMessage = filteredUsers.every((id) =>
+    filteredReadBy.includes(id)
+  );
+
+  return allUserReadMessage;
+};

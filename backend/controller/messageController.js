@@ -50,4 +50,21 @@ const getAllMessage = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { sendMessage, getAllMessage };
+const markAsRead = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const chatId = req.params.chatId;
+
+    // Update all messages in the chat to add the userId to readBy array if not already present
+    await Message.updateMany(
+      { chat: chatId, readBy: { $ne: userId } },
+      { $push: { readBy: userId } }
+    );
+
+    res.status(200).send("Messages marked as read");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+module.exports = { sendMessage, getAllMessage, markAsRead };

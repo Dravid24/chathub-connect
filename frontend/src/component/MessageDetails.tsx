@@ -25,6 +25,7 @@ import {
   isLastMessage,
   isSameSenderMargin,
   isSameUser,
+  isAllPersonsReadMessage,
 } from "../common/util";
 import io from "socket.io-client";
 import typingIcon from "../assets/typing.gif";
@@ -35,7 +36,7 @@ import "regenerator-runtime";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { PiSpeakerHighBold } from "react-icons/pi";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { BiChevronDown } from "react-icons/bi";
 
 // const ENDPOINT = "http://localhost:5000"; // development
@@ -80,9 +81,14 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
 
   useEffect(() => {
     getAllMessage();
+    markMessagesAsRead();
     setIsShowEmoji(false);
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  useEffect(() => {
+    markMessagesAsRead();
+  }, [allMessages]);
 
   useEffect(() => {
     socket.on("message recieved", (msgRecieved) => {
@@ -115,6 +121,28 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
         toast({
           title: "Error Occured",
           description: "Failed to load all messages",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
+  const markMessagesAsRead = async () => {
+    if (!selectedChat) return;
+    axios
+      .put(
+        `/api/message/${selectedChat._id}/mark-as-read`,
+        { userId: user._id },
+        config
+      )
+      .then(() => {
+        socket.emit("join chat", selectedChat._id);
+      })
+      .catch(() => {
+        toast({
+          title: "Error Occured",
+          description: "Failed to update message status",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -325,11 +353,22 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
                             message.sender._id === user._id ? "#B9F5D0" : "#fff"
                           }`,
                           borderRadius: "6px",
-                          padding: "5px 15px",
+                          padding: "5px 5px 5px 15px",
                           width: "fit-content",
+                          display: "flex",
                         }}
                       >
-                        {message.content}
+                        {message.content}{" "}
+                        {message.sender._id === user._id && (
+                          <IoCheckmarkDoneSharp
+                            color={
+                              isAllPersonsReadMessage(message, user._id)
+                                ? "#53bdeb"
+                                : "#8696a0"
+                            }
+                            style={{ margin: "8px 0 0 5px" }}
+                          />
+                        )}
                       </div>
                       {message.sender._id !== user._id && (
                         <span
@@ -358,13 +397,14 @@ const MessageDetails = ({ user, isLoadChatList, setIsLoadChatList }) => {
                         </span>
                       )}
                     </div>
-                    {/* <span
-                      onClick={() =>
-                        handleTranslate(message._id, message.content)
-                      }
-                    >
-                      Translate
-                    </span> */}
+                    {message.sender._id === user._id &&
+                      i === allMessages.length - 1 && (
+                        <p className="messageStatus">
+                          {isAllPersonsReadMessage(message, user._id)
+                            ? "Seen"
+                            : "Delivered"}
+                        </p>
+                      )}
                   </div>
                 </>
               </div>
